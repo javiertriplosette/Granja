@@ -3,56 +3,176 @@ package granja;
 
 import java.util.Objects;
 import java.util.Scanner;
-
+import java.util.Iterator;
+import java.util.ArrayList;
 
 public class Main {
 
  public static void main(String[] args) {
-        Perro perro;
-        perro = new Perro("p7777", "07/02/2001", 'M', 777, "perro");
+        Scanner sc = new Scanner(System.in);
 
-        Perro perroAnterior = null;
-        Scanner numeros = new Scanner(System.in);
-        Fecha fecha;
+        ArrayList<Animal> miGranja = new ArrayList();
+        Iterator iterador;
 
-        String codigo;
-        String fechaNacimiento;
-        char sexo;
-        double peso;
+        String codigoAnimal;
+        String fechaNacimientoAnimal;
+        char sexoAnimal;
+        double pesoAnimal;
         String raza;
+        String tipoAnimal;
 
-        int numeroPerros = numeros.nextInt();
-        numeros.nextLine();
+        int numAnimales;
+        Animal animal;
+        Perro perro;
+        Gato gato;
 
-        System.out.println("Procesando perros de la granja");
+        numAnimales = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Procesando animales de la granja");
         System.out.println("----------------------------------");
-        for (int i = 0; i < numeroPerros; i++) {
+        for (int i = 1; i <= numAnimales; i++) {
 
-            codigo = numeros.nextLine();
-            fechaNacimiento = numeros.nextLine();
-            sexo = numeros.next().charAt(0);
-            peso = numeros.nextDouble();
-            numeros.nextLine();
-            raza = numeros.nextLine();
-            try {
-                perro = new Perro(codigo, fechaNacimiento, sexo, peso, raza);
-                if (perroAnterior != null) {
-                    if (perro.equals(perroAnterior)) {
-                        System.out.println(perro.toString() + " y " + perroAnterior.toString() + " son el mismo");
-                    } else {
-                        System.out.println(perro.toString() + " y " + perroAnterior.toString() + " son distintos");
-                    }
+            tipoAnimal = sc.nextLine();
+
+            codigoAnimal = sc.nextLine();
+            fechaNacimientoAnimal = sc.nextLine();
+            sexoAnimal = sc.nextLine().charAt(0);
+            pesoAnimal = sc.nextDouble();
+            sc.nextLine();
+
+            if (tipoAnimal.equals("perro")) {
+                raza = sc.nextLine();
+                try {
+
+                    perro = new Perro(codigoAnimal, fechaNacimientoAnimal, sexoAnimal, pesoAnimal, raza);
+                    miGranja.add(perro);
+
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("ERROR procesando perro. Datos incorrectos. Procesando siguiente animal");
                 }
-                perroAnterior = perro;
-            } catch (IllegalArgumentException J) {
-                System.out.println("ERROR. Procesando siguiente perro");
-            }
+            } else if (tipoAnimal.equals("gato")) {
+                raza = sc.nextLine();
+                try {
 
+                    gato = new Gato(codigoAnimal, fechaNacimientoAnimal, sexoAnimal, pesoAnimal, raza);
+                    miGranja.add(gato);
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("ERROR procesando gato. Datos incorrectos. Procesando siguiente animal");
+                }
+            }
+        }
+        iterador = miGranja.iterator();
+
+        while (iterador.hasNext()) {
+            System.out.println();
+            animal = (Animal) iterador.next();
+            System.out.println(animal.toString());
+            System.out.println(animal.queSoy());
+            System.out.println("Hago " + animal.hacerSonido());
+            System.out.println(animal.alegrarse());
+            System.out.println(animal.enfadarse());
+        }
+        miGranja.clear();
+    }
+
+
+}
+class Gato extends Animal {
+
+    private String raza;
+
+    public Gato(String codigo, String fechaNacimiento, char sexo, double peso, String raza) throws IllegalArgumentException {
+        super(codigo, fechaNacimiento, sexo, peso);
+        if ("".equals(raza) || !codigo.matches("g.*")) {
+            throw new IllegalArgumentException();
+        } else {
+            this.raza = raza;
+        }
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.raza) + super.hashCode();
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        final Gato other = (Gato) obj;
+        if (!Objects.equals(this.raza, other.raza)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Gato{" + super.toString() + "raza=" + raza + '}';
+    }
+
+    public String cazar() {
+        return "Me encanta cazar bichejos";
+    }
+
+    @Override
+    public String hacerSonido() {
+        return "Miau";
+    }
+
+    @Override
+    public String alegrarse() {
+        return "Cuando estoy alegre Ronroneo y me froto contra tus piernas";
+    }
+
+    @Override
+    public String enfadarse() {
+        return "Cuando me enfado Me bufo y saco las u??as";
+    }
+
+    @Override
+    public String queSoy() {
+        return "Soy un gato";
+    }
+
+    public String getRaza() {
+        return raza;
+    }
+
+    public void setRaza(String raza) {
+        if ("".equals(raza)) {
+            throw new IllegalArgumentException();
+        } else {
+            this.raza = raza;
+        }
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        if (!codigo.matches("g.*")) {
+            throw new IllegalArgumentException();
+        } else {
+            this.codigo = codigo;
         }
     }
 
 }
-
 class Perro extends Animal {
 
     private String raza;
@@ -126,7 +246,7 @@ class Perro extends Animal {
 
     @Override
     public String hacerSonido() {
-        return "Hago Guau";
+        return "Guau";
     }
 
     @Override
@@ -145,7 +265,6 @@ class Perro extends Animal {
     }
 
 }
-
 abstract class Animal {
 
     protected String codigo;
@@ -164,14 +283,14 @@ abstract class Animal {
             this.peso = peso;
         }
     }
-
-    public abstract String hacerSonido();
+     public abstract String hacerSonido();
 
     public abstract String alegrarse();
 
     public abstract String enfadarse();
 
     public abstract String queSoy();
+
 
     public String getCodigo() {
 
@@ -255,8 +374,9 @@ abstract class Animal {
 
     @Override
     public String toString() {
-        return "Animal{" + "codigo=" + codigo + ", fechaNacimiento=Fecha" + '{' + fechaNacimiento.getDiaSemana() + ", " + fechaNacimiento.getDia() + " de " + fechaNacimiento.getMesNombre() + " de " + fechaNacimiento.getAnyo() + "}, sexo=" + sexo + ", peso=" + peso + '}';
+        return "Animal{" + "codigo=" + codigo + ", fechaNacimiento=Fecha" + '{' + fechaNacimiento.getDiaSemana() + ", " + fechaNacimiento.getDia() + " de " + fechaNacimiento.getMesNombre() + " de " + fechaNacimiento.getAnyo()+"}, sexo="+sexo +", peso="+peso+'}';
     }
+ 
 
 }
 
@@ -982,5 +1102,3 @@ class Fecha {
     }
 
 }
-
-

@@ -7,10 +7,10 @@ import java.util.Scanner;
 
 public class Main {
 
-   public static void main(String[] args) {
+ public static void main(String[] args) {
         Animal animal = new Animal("12345", "07/02/2001", 'M', 777);
+        Animal animalAnterior = null;
         Scanner numeros = new Scanner(System.in);
-        boolean correcto;
         Fecha fecha;
         String codigo;
         String fechaNacimiento;
@@ -29,75 +29,22 @@ public class Main {
             peso = numeros.nextDouble();
             try {
                 animal = new Animal(codigo, fechaNacimiento, sexo, peso);
-                fecha = animal.getFechaNacimiento();
 
-                System.out.println("Procesado: " + animal.getCodigo() + " " + animal.getSexo() + " de " + animal.getPeso() + " kilos, nacido el " + fecha.getDia() + " de " + fecha.getMesNombre() + " de " + fecha.getAnyo());
+                if (animalAnterior != null) {
+
+                    if (animalAnterior.equals(animal)) {
+                        System.out.println(animal.toString() + " y " + animalAnterior.toString() + " son el mismo");
+                    } else {
+                        System.out.println(animal.toString() + " y " + animalAnterior.toString() + " son distintos");
+                    }
+                }
+                animalAnterior = animal;
 
             } catch (IllegalArgumentException J) {
                 System.out.println("ERROR. Procesando siguiente animal");
-
             }
         }
-
-        System.out.println("Cambiando datos del ultimo animal");
-        System.out.println("----------------------------------");
-        correcto = false;
-        boolean correcto2 = false;
-        boolean correcto3 = false;
-        boolean correcto4 = false;
-        boolean correcto5 = false;
         numeros.nextLine();
-
-        while (!correcto) {
-
-            try {
-                codigo = numeros.nextLine();
-                animal.setCodigo(codigo);
-                correcto = true;
-            } catch (IllegalArgumentException JJ) {
-                System.out.println("Dato erroneo. No se hace el cambio");
-                correcto = false;
-            }
-        }
-
-        while (!correcto2) {
-
-            try {
-                fechaNacimiento = numeros.nextLine();
-                animal.setFechaNacimiento(fechaNacimiento);
-                correcto2 = true;
-            } catch (IllegalArgumentException JJJ) {
-                System.out.println("Dato erroneo. No se hace el cambio");
-                correcto2 = false;
-            }
-        }
-        while (!correcto3) {
-
-            try {
-                sexo = numeros.next().charAt(0);
-                animal.setSexo(sexo);
-                correcto3 = true;
-            } catch (IllegalArgumentException JJJJ) {
-                System.out.println("Dato erroneo. No se hace el cambio");
-                correcto3 = false;
-            }
-        }
-        while (!correcto4) {
-
-            try {
-                peso = numeros.nextDouble();
-
-                animal.setPeso(peso);
-                correcto4 = true;
-
-            } catch (IllegalArgumentException JJJJJ) {
-                System.out.println("Dato erroneo. No se hace el cambio");
-                correcto4 = false;
-            }
-        }
-
-        fecha = animal.getFechaNacimiento();
-        System.out.println("Procesado: " + animal.getCodigo() + " " + animal.getSexo() + " de " + animal.getPeso() + " kilos, nacido el " + fecha.getDia() + " de " + fecha.getMesNombre() + " de " + fecha.getAnyo());
 
     }
 
@@ -204,9 +151,8 @@ class Animal {
 
     @Override
     public String toString() {
-        return "Animal{" + "codigo=" + codigo + ", fechaNacimiento=Fecha" + '{' + fechaNacimiento.getDiaSemana() + ", " + fechaNacimiento.getDia() + " de " + fechaNacimiento.getMesNombre() + " de " + fechaNacimiento.getAnyo() + "}}";
+        return "Animal{" + "codigo=" + codigo + ", fechaNacimiento=Fecha" + '{' + fechaNacimiento.getDiaSemana() + ", " + fechaNacimiento.getDia() + " de " + fechaNacimiento.getMesNombre() + " de " + fechaNacimiento.getAnyo() + "}, sexo=" + sexo + ", peso=" + peso + '}';
     }
-   
 
 }
 
@@ -636,7 +582,7 @@ class Fecha {
     }
 
     public String getDiaSemana() {
-        String semana[] = {"Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"};
+        String semana[] = {"domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"};
         return semana[this.getNumeroDiaSemana()];
     }
 
@@ -930,11 +876,4 @@ class Fecha {
     public String toString() {
         return "Fecha{" + "dia=" + dia + ", mes=" + mes + ", anyo=" + anyo + '}';
     }
-
 }
-
-
-
-    
-    
-
